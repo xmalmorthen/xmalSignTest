@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+   <meta charset="utf-8"/>
+   <title>Sign with widget</title>
+
+   <link rel="stylesheet" href="vendor/bootstrap/v5.0/bootstrap.min.css">
+
+   <!-- <script type="text/javascript" async src="http://127.0.0.1:5501/signWithWidget/widget/widget.v1.0.0.js"></script> -->
+   <!-- <script type="text/javascript" async src="http://10.10.20.27:4200/assets/libs/widget.v1.0.0.js"></script> -->
+   <script type="text/javascript" async src="https://xmalmorthen.github.io/xmalSign/assets/widget.v1.0.0.js"></script>
+
+   <script>
+	   window.onload = function() {
+		   showWidget();
+		};
+
+      window.addEventListener("message", function(evt) {
+         if ( window.xmalSign.config.sandBox.includes(evt.origin) ){
+            const data = JSON.parse(evt.data);
+
+            if (data.messageType !== 'sing')
+               alert(`${data.messageType} - ${data.message}`);
+            else 
+               signResponse(data);
+            
+         }
+      }, false);
+
+      const signResponse = (res) => {
+         
+         console.log(res);
+
+         $('#widgetContainer').html('');
+         if (res.statusCode === 1 && res.data) {
+            $('#pkcs7Signature').html(res.data.b64Pkcs7);
+            $('#pkcs7Signature').parent().removeClass('d-none');
+            $('#b64Signature').html(res.data.b64Signature);
+            $('#b64Signature').parent().removeClass('d-none');
+            $('#errSignature').parent().addClass('d-none');
+         } else {
+            $('#errSignature').html(res.message);
+            $('#pkcs7Signature').parent().addClass('d-none');
+            $('#b64Signature').parent().addClass('d-none');
+            $('#errSignature').parent().removeClass('d-none');
+         }
+
+         $('#signResponse').removeClass('d-none');
+
+         $('.btnShowWidget').removeClass('d-none');
+
+      }
+
+      const showWidget = () => {
+         
+         window.xmalSign.widget({
+            signToken: 666,
+            appendTo:'widgetContainer',
+            frame: {
+               width: '100%',
+               height: 'calc(70vh)',
+               border: 'none',
+               padding: '2rem 1rem 0 1rem',
+               loading: {
+                  show: true,
+                  container: 'body', // 'widget' || '#title'                  
+               },
+            },
+            configurations: {
+               title: 'Firma digital XMAL',
+               rememberPCert: true,
+               background: '#343a40',
+               color: 'white',
+               controls: {
+                  background: 'transparent',
+                  color: 'white'
+               }
+            }
+         });
+
+         // const frame = document.getElementById(window.xmalSign.config.widgetId);
+         // frame.contentWindow.postMessage(JSON.stringify({}),'http://10.10.20.27:5501');
+         //document.getElementById(window.xmalSign.config.widgetId).contentWindow.postMessage(JSON.stringify({}),'https://xmalmorthen.github.io');
+
+      }
+
+   </script>
+</head>
+<body class="bg-dark text-white container-fluid">  	
+	<h3 id="title">Sign with widget</h3>	
+	<div id="widgetContainer"></div>
+   <div id="signResponse" class="row d-none py-3 px-2">
+      <div  class="col-6 d-none">
+         <h5>PKCS7</h5>
+         <p id="pkcs7Signature" style="word-break: break-all;"></p>
+      </div>
+      <div  class="col-6 d-none">
+         <h5>Signature</h5>
+         <p id="b64Signature" style="word-break: break-all;"></p>
+      </div>
+      <div class="col-12 d-none">
+         <h1><i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i> Error</h1>
+         <p id="errSignature" class="text-danger text-center h1 text-uppercase"></p>
+      </div>
+   </div>
+   <div class="text-right d-none btnShowWidget">
+      <button type="button" class="btn btn-outline-primary btn-lg" onclick="$('#signResponse,.btnShowWidget').addClass('d-none'); showWidget();">Generar firma</button>
+   </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</html>
