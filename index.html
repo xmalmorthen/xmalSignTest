@@ -19,7 +19,7 @@
          if ( window.xmalSign.config.sandBox.includes(evt.origin) ){
             const data = JSON.parse(evt.data);
 
-            if (data.messageType !== 'sing')
+            if (data.messageType !== 'sign')
                alert(`${data.messageType} - ${data.message}`);
             else 
                signResponse(data);
@@ -77,11 +77,6 @@
                }
             }
          });
-
-         // const frame = document.getElementById(window.xmalSign.config.widgetId);
-         // frame.contentWindow.postMessage(JSON.stringify({}),'http://10.10.20.27:5501');
-         //document.getElementById(window.xmalSign.config.widgetId).contentWindow.postMessage(JSON.stringify({}),'https://xmalmorthen.github.io');
-
       }
 
    </script>
