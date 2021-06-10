@@ -1,0 +1,12 @@
+{
+  "name": "XmalSignTest",
+  "version": "0.1.666",
+  "scripts": {    
+    "publish:git": "git add . && git commit -am \"deploy\" && git push origin master"    
+  },
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
